@@ -9,10 +9,10 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ReplyModal from "./ReplyModal";
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 // import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { createReTweet, likeTweet, deleteTweet, getAllTweets } from "../../Store/Twit/Action";
+import { createReTweet, likeTweet, deleteTweet } from "../../Store/Twit/Action";
 
 const TweetCard = ({ item }) => {
   const navigate = useNavigate();
@@ -22,9 +22,9 @@ const TweetCard = ({ item }) => {
   const handleOpenReplyModel = () => setOpenReplyModal(true);
   const handleCloseReplyModal = () => setOpenReplyModal(false);
   const dispatch = useDispatch();
-  const {twit} = useSelector(store=>store);
+  // const {twit} = useSelector(store=>store);
 
-  const handleBack = () => navigate(-1);
+  // const handleBack = () => navigate(-1);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -47,9 +47,7 @@ const TweetCard = ({ item }) => {
     dispatch(likeTweet(item?.id));
     console.log("Handle like tweet");
   };
-  useEffect(()=>{
-    dispatch(getAllTweets())
-  },[twit.like, twit.retwit, twit.twit])
+
   return (
     <React.Fragment>
       <div className="flex space-x-5">

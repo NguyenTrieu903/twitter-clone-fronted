@@ -2,8 +2,7 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-import { Avatar, MenuItem, Menu } from "@mui/material";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import { Avatar } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ImageIcon from "@mui/icons-material/Image";
 import FmdGoodIcon from "@mui/icons-material/FmdGood";
@@ -13,7 +12,6 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createTweetReply } from "../../Store/Twit/Action";
 import {uploadToCloudnary} from '../../Utils/upLoadToCloudnary'
-import{getTextWidth} from '../../Utils/upLoadToCloudnary'
 
 const style = {
   position: "absolute",
