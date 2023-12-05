@@ -1,3 +1,6 @@
+import {api} from "../config/api"
+import { UPLOAD_SUCCESS } from "../Store/Twit/ActionType";
+
 export const uploadToCloudnary=async(pics)=>{
     console.log(pics)
     const unsignedUploadPreset = "instagram";
@@ -19,6 +22,24 @@ export const uploadToCloudnary=async(pics)=>{
         console.log("error from upload function")
     }
 }
+
+export const uploadFile = (event) => async (dispatch) => {
+    const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    const formData = new FormData();
+    formData.append('image', event.target.files[0]);
+    try {
+        const { data } = await api.post(`/api/twits/uploadfile`, formData, config);
+    //   console.log("get user twits : ", data);
+    //   dispatch({ type: UPLOAD_SUCCESS, payload: data });
+        return data.toString();
+    } catch (error) {
+      console.log("catch error - ", error);
+    }
+  };
 
 export const getTextWidth=(text, font)=>{
     const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'));

@@ -10,9 +10,10 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import ReplyModal from "./ReplyModal";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { createReTweet, likeTweet, deleteTweet } from "../../Store/Twit/Action";
+import EditModal from "./EditTwitModal";
 
 const TweetCard = ({ item }) => {
   const navigate = useNavigate();
@@ -21,7 +22,12 @@ const TweetCard = ({ item }) => {
   const [openReplyeModal, setOpenReplyModal] = useState(false);
   const handleOpenReplyModel = () => setOpenReplyModal(true);
   const handleCloseReplyModal = () => setOpenReplyModal(false);
+
+  const [openEditModal, setopenEditModal] = useState(false);
+  const handleOpenEditModal = () => setopenEditModal(true);
+  const handleCloseEditModal = () => setopenEditModal(false);
   const dispatch = useDispatch();
+  const {auth} = useSelector(store=>store);
   // const {twit} = useSelector(store=>store);
 
   // const handleBack = () => navigate(-1);
@@ -55,7 +61,7 @@ const TweetCard = ({ item }) => {
           onClick={() => navigate(`/profile/${item?.user.id}`)}
           className="cursor-pointer"
           alt="username"
-          src="https://img.carbiz.vn/files/2020/Thang%203/03/911/porsche-911-s-2021.jpg"
+          src={item?.user.image}
         />
         <div className="w-full">
           <div className="flex justify-between items-center">
@@ -90,7 +96,7 @@ const TweetCard = ({ item }) => {
                 }}
               >
                 <MenuItem onClick={handleDeleteTweet}>Delete</MenuItem>
-                <MenuItem onClick={handleDeleteTweet}>Edit</MenuItem>
+                <MenuItem onClick={handleOpenEditModal}>Edit</MenuItem>
               </Menu>
             </div>
           </div>
@@ -167,6 +173,14 @@ const TweetCard = ({ item }) => {
           item = {item}
           open={openReplyeModal}
           handleClose={handleCloseReplyModal}
+        />
+      </section>
+
+      <section>
+        <EditModal 
+          item = {item}
+          open={openEditModal}
+          handleClose={handleCloseEditModal}
         />
       </section>
     </React.Fragment>

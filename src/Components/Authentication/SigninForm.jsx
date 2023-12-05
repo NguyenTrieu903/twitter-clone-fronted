@@ -1,18 +1,28 @@
 import React from "react";
-import { getFormLabelUtilityClasses, Grid, TextField } from "@mui/material";
+import { Grid, TextField, Button } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Avatar, Button } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../Store/Auth/Action";
+import { useState } from "react";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is Required"),
   password: Yup.string().required("Password is required"),
 });
 const SigninForm = () => {
-    const dispath=useDispatch();
+  // localStorage.clear();
+  const dispatch=useDispatch();
+  const [error, setError] = useState(null);
+  const handleLogin = async (loginData) => {
+    try {
+      await dispatch(loginUser(loginData));
+    } catch (error) {
+      setError(error)
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -20,7 +30,7 @@ const SigninForm = () => {
     },
     validationSchema,
     onSubmit: (values) => {
-        dispath(loginUser(values))
+      handleLogin(values)
       console.log("form value ", values);
     },
   });
@@ -37,7 +47,7 @@ const SigninForm = () => {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.email && Boolean(formik.errors.email)}
+            error={error?.AccessDenied}
             helperText={formik.touched.email && formik.errors.email}
           />
         </Grid>
@@ -53,8 +63,8 @@ const SigninForm = () => {
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
+            error={error?.AccessDenied}
+            helperText={error?.AccessDenied}
           />
         </Grid>
 

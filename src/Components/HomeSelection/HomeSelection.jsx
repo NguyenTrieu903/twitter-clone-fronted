@@ -9,7 +9,7 @@ import TagFacesIcon from "@mui/icons-material/TagFaces";
 import TweetCard from "./TweetCard";
 import { useDispatch, useSelector } from 'react-redux'
 import{createTweet, getAllTweets} from '../../Store/Twit/Action'
-import {uploadToCloudnary} from '../../Utils/upLoadToCloudnary'
+import {uploadFile, uploadToCloudnary} from '../../Utils/upLoadToCloudnary'
 
 const validationSchema = Yub.object().shape({
   content: Yub.string().required("Tweet text is required"),
@@ -20,6 +20,7 @@ const HomeSelection = () => {
   const [selectImage, selectedImage] = useState("");
   const dispatch = useDispatch();
   const {twit} = useSelector(store=>store);
+  const {auth} = useSelector(store=>store);
   console.log("twit", twit)
   
   const handleSubmit = (values, actions) => {
@@ -51,6 +52,16 @@ const HomeSelection = () => {
     selectedImage(imgUrl);
     setUploadingImage(false);
   };
+
+  const handleImageChane = async (event) =>{
+    dispatch(uploadFile(event)).then((imgUrl)=>{
+      formik.setFieldValue("image", imgUrl);
+      selectedImage(imgUrl);
+      setUploadingImage(false);
+    })
+    setUploadingImage(false);
+  };
+  // console.log(handleImageChane)
   return (
     <div className="space-y-5">
         {/* section home */}
@@ -61,8 +72,8 @@ const HomeSelection = () => {
       <selection className={`pb-10`}>
         <div className="flex space-x-5">
           <Avatar
-            alt="username"
-            src="https://img.carbiz.vn/files/2020/Thang%203/03/911/porsche-911-s-2021.jpg"
+            alt="username"  
+            src={auth.user?.image}
           ></Avatar>
           <div className="w-full">
             <form onSubmit={formik.handleSubmit}>
@@ -89,7 +100,7 @@ const HomeSelection = () => {
                       type="file"
                       name="imageFile"
                       className="hidden"
-                      onChange={handleSelectImage}
+                      onChange={handleImageChane}
                     ></input>
                   </label>
                   <FmdGoodIcon className="text-[#1d9bf0]" />
@@ -124,8 +135,6 @@ const HomeSelection = () => {
       <selection>
         {twit.twits.map((item)=><TweetCard item={item}/>)}
       </selection>
-
-
     </div>
   );
 };

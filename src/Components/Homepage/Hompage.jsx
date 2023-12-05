@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Profile from "../Profile/Profile";
 import TwitDetails from "../TwitDetails/TwitDetails";
 import Authentication from "../Authentication/Authentication";
+import SignupForm from "../Authentication/SignupForm";
+import SigninForm from "../Authentication/SigninForm";
 
 const Homepage = () => {
   return (
@@ -25,6 +27,8 @@ const Homepage = () => {
             <Route path="/home" element={<HomeSelection/>}></Route>
             <Route path="/profile/:id" element={<Profile/>}></Route>
             <Route path="/twit/:id" element={<TwitDetails/>}></Route>
+            <Route path="/signup" element={<SignupForm/>}></Route>
+            <Route path="/signin" element={<SigninForm/>}></Route>
         </Routes>
       </Grid>
       <Grid item xs={0} lg={3} className="hidden lg:block w-full relative">

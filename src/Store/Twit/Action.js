@@ -18,6 +18,9 @@ import {
   TWEET_CREATE_FAILURE,
   TWEET_CREATE_SUCCESS,
   TWEET_DELETE_SUCCESS,
+  TWEET_UPDATE_FAILURE,
+  TWEET_UPDATE_REQUEST,
+  TWEET_UPDATE_SUCCESS,
   USER_LIKE_TWEET_FAILURE,
   USER_LIKE_TWEET_SUCCESS,
 } from "./ActionType";
@@ -128,5 +131,16 @@ export const deleteTweet = (twitId) => async (dispatch) => {
   } catch (error) {
     console.log("catch error - ", error);
     dispatch({ type: TWEET_CREATE_FAILURE, payload: error.message });
+  }
+};
+
+export const editTweet = (values) => async (dispatch) => {
+  try {
+    const { data } = await api.put(`/api/twits/edit`, values);
+    console.log("updated tweet : ", values);
+    dispatch({ type: TWEET_UPDATE_SUCCESS, payload: data });
+  } catch (error) {
+    console.log("catch error - ", error);
+    dispatch({ type: TWEET_UPDATE_FAILURE, payload: error.message });
   }
 };

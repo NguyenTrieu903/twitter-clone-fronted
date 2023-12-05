@@ -9,7 +9,7 @@ import FmdGoodIcon from "@mui/icons-material/FmdGood";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import { useFormik } from "formik";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createTweetReply } from "../../Store/Twit/Action";
 import {uploadToCloudnary} from '../../Utils/upLoadToCloudnary'
 
@@ -32,6 +32,7 @@ export default function ReplyModal({handleClose, open, item}) {
   const [selectImage, selectedImage] = useState("");
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { auth } = useSelector((store) => store);
 //   const [open, setOpen] = React.useState(false);
 //   const handleOpen = () => setOpen(true);
 //   const handleClose = () => setOpen(false);
@@ -75,13 +76,13 @@ export default function ReplyModal({handleClose, open, item}) {
               onClick={() => navigate(`/profile/${item?.user.id}`)}
               className="cursor-pointer"
               alt="username"
-              src="https://files.porsche.com/filestore/image/multimedia/none/RD-2023-Homepage-Banner-WW-TaycanPush-KW20/normal/c68103e7-ef29-11ed-8103-005056bbdc38/porsche-normal.jpg"
+              src={item?.user.image}
             />
             <div className="w-full">
               <div className="flex justify-between items-center">
                 <div className="flex cursor-pointer items-center space-x-2">
-                  <span className="font-semibold">NhatTrieu911</span>
-                  <span className="text-gray-600">@Trieu911 . 2m</span>
+                  <span className="font-semibold">{item?.user.fullName}</span>
+                  <span className="text-gray-600">@{item?.user.fullName.split(" ").join("_").toLowerCase()} .2m</span>
                   <img
                     className="ml-2 w-5 h-5"
                     src="https://abs.twimg.com/responsive-web/client-web/verification-card-v2@3x.8ebee01a.png"
@@ -96,11 +97,11 @@ export default function ReplyModal({handleClose, open, item}) {
                   className="cursor-pointer"
                 >
                   <p className="mb-2 p-0">{item?.content}</p>
-                  {/* <img
+                  <img
                     className="w-[28rem] border border-gray-400 p-5 rounded-md"
-                    src="https://files.porsche.com/filestore/image/multimedia/none/RD-2023-Homepage-Banner-WW-TaycanPush-KW20/normal/c68103e7-ef29-11ed-8103-005056bbdc38/porsche-normal.jpg"
+                    src={item?.image}
                     alt=""
-                  ></img> */}
+                  ></img>
                 </div>
               </div>
             </div>
@@ -109,7 +110,7 @@ export default function ReplyModal({handleClose, open, item}) {
             <div className="flex space-x-5">
               <Avatar
                 alt="username"
-                src="https://files.porsche.com/filestore/image/multimedia/none/RD-2023-Homepage-Banner-WW-TaycanPush-KW20/normal/c68103e7-ef29-11ed-8103-005056bbdc38/porsche-normal.jpg"
+                src={auth.user.image}
               ></Avatar>
               <div className="w-full">
                 <form onSubmit={formik.handleSubmit}>
@@ -119,12 +120,7 @@ export default function ReplyModal({handleClose, open, item}) {
                       name="content"
                       placeholder="What is happening"
                       className={`border-none outline-none bg-transparent`}
-                      style={{ width: '500px', height: '100px' }}
-                      // ref={input => {
-                      //   if (input) {
-                      //     input.style.width = `${getTextWidth(input.value, '16px')}px`;
-                      //   }
-                      // }}
+                      style={{ width: '500px'}}
                       {...formik.getFieldProps("content")}
                       {...(formik.errors.content && formik.touched.content && (
                         <span className="text-red-500">
@@ -165,7 +161,7 @@ export default function ReplyModal({handleClose, open, item}) {
                     </div>
                   </div>
                 </form>
-                <div className="mt-2 flex" style={{ width: '500px', height: '300px', position: 'relative' }}>
+                <div className="mt-2 flex" style={{ width: '100px', height: '100px', position: 'relative' }}>
                   {selectImage && <img src={selectImage} alt="" ></img>}
                 </div>
               </div>

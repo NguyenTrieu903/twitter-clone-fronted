@@ -4,11 +4,23 @@ import { GoogleLogin } from "@react-oauth/google";
 import Button from "@mui/material/Button";
 import AuthModal from "./AuthModal";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Authentication = () => {
   const [openAuthModel, setOpenAuthModal]=useState(false);
-  const handleOpenAuthModal=()=>setOpenAuthModal(true);
+  // const [open, setIsOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const handleOpenAuthModal=()=>{
+    navigate('/signup');
+    setOpenAuthModal(true);
+  }
+  const handleOpenAuthModalSignin=()=>{
+    navigate('/signin');
+    setOpenAuthModal(true);
+  }
+  // const openForm = () => setIsOpen(true);
   const handleCloseAuthModal =()=>setOpenAuthModal(false);
+  
   return (
     <div>
       <Grid className="overflow-y-hidden" container>
@@ -48,6 +60,8 @@ const Authentication = () => {
                   py: "7px",
                 }}
                 onClick={handleOpenAuthModal}
+                // onClick={openForm}
+
               >
                 Create Account
               </Button>
@@ -65,7 +79,7 @@ const Authentication = () => {
                   borderRadius: "29px",
                   py: "7px",
                 }}
-                onClick={handleOpenAuthModal}
+                onClick={handleOpenAuthModalSignin}
               >
                 Login
               </Button>

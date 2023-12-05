@@ -1,4 +1,5 @@
 import { getNativeSelectUtilityClasses } from "@mui/material";
+import { UPDATE_USER_SUCCESS } from "../Auth/ActionType";
 import {
   FIND_TWEET_BY_ID_FAILURE,
   FIND_TWEET_BY_ID_REQUEST,
@@ -18,6 +19,7 @@ import {
   TWEET_DELETE_FAILURE,
   TWEET_DELETE_REQUEST,
   TWEET_DELETE_SUCCESS,
+  TWEET_UPDATE_SUCCESS,
   USER_LIKE_TWEET_FAILURE,
   USER_LIKE_TWEET_REQUEST,
   USER_LIKE_TWEET_SUCCESS,
@@ -77,11 +79,18 @@ export const tweetReducer = (state = initialState, action) => {
         like: action.payload,
       };
     case TWEET_DELETE_SUCCESS:
+      const indexToRemove = action.payload;
+      const updatedTwits = [
+        ...state.twits.slice(0, indexToRemove),
+        ...state.twits.slice(indexToRemove + 1),
+      ];
+
       return {
         ...state,
         loading: false,
         error: null,
-        twits: state.twits.filter((twit) => twit.id != action.payload),
+        // twits: state.twits.filter((twit) => twit.id != action.payload),
+        twits: updatedTwits,
       };
     case RETWEET_SUCCESS:
       return {
@@ -92,6 +101,8 @@ export const tweetReducer = (state = initialState, action) => {
       };
     case FIND_TWEET_BY_ID_SUCCESS:
     case REPLY_TWEET_SUCCESS:
+    case UPDATE_USER_SUCCESS:
+    case TWEET_UPDATE_SUCCESS:
       return {
         ...state,
         loading: false,

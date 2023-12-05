@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Avatar, Button } from "@mui/material";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -12,6 +12,9 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import TweetCard from "../HomeSelection/TweetCard";
 import ProfileModal from "./ProfileModal";
+import { useSelector, useDispatch} from "react-redux";
+import { findUserById, followUserAction } from "../../Store/Auth/Action";
+import { getUsersTweet } from "../../Store/Twit/Action";
 
 const Profile = () => {
   const [tabValue, setTabValue] = useState("1");
@@ -20,10 +23,16 @@ const Profile = () => {
   const handleOpenProfileModel = () => setOpenProfileModal(true);
   const handleClose = () => setOpenProfileModal(false);
   const handleBack = () => navigate(-1);
+  const {auth, twit} = useSelector(store=>store)
+  const {id} = useParams()
   // const handleOpenProfileModel = () => {
   //   console.log("open profile model");
   // };
-  const handleFollowUser = () => {};
+  const handleFollowUser = () => {
+    dispatch(followUserAction(id))
+    console.log("follow user");
+  };
+  const dispatch = useDispatch();
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
     if (newValue === 4) {
@@ -32,6 +41,12 @@ const Profile = () => {
       console.log("users twits");
     }
   };
+  
+  useEffect(()=>{
+    dispatch(findUserById(id))
+    dispatch(getUsersTweet(id))
+  },[id])
+  console.log(auth.findUser);
   return (
     <div>
       <section className={`bg-white z-50 flex items-center sticky top-0 bg-opacity-95`}>
@@ -39,13 +54,13 @@ const Profile = () => {
           className="cursor-pointer"
           onClick={handleBack}
         />
-        <h1 className="py-5 text-xl font-bold opacity-90 ml-5">NhatTrieu911</h1>
+        <h1 className="py-5 text-xl font-bold opacity-90 ml-5">{auth.findUser?.fullName}</h1>
       </section>
 
       <section>
         <img
           className="w-[100%] h-[15rem] object-cover"
-          src="https://porsche-vietnam.vn/wp-content/uploads/2022/11/model-series-911-dakar-head-banner.jpg"
+          src={auth.findUser?.backgroundImage}
           alt=""
         ></img>
       </section>
@@ -54,11 +69,11 @@ const Profile = () => {
         <div className="flex justify-between items-start mt-5 h-[5rem]">
           <Avatar
             className="transform -translate-y-24"
-            alt="NhatTrieu911"
-            src="https://img.carbiz.vn/files/2020/Thang%203/03/911/porsche-911-s-2021.jpg"
+            alt="NhatTrieu911"  
+            src={auth.findUser?.image}
             sx={{ width: "10rem", height: "10rem", border: "4px solid white" }}
           />
-          {true ? (
+          {auth.findUser?.req_user ? (
             <Button
               onClick={handleOpenProfileModel}
               variant="contained"
@@ -72,13 +87,13 @@ const Profile = () => {
               variant="contained"
               sx={{ borderRadius: "20px" }}
             >
-              {true ? "Follow" : "Unfollow"}
+              {auth.findUser?.followed ? "Unfollow" : "Follow"}
             </Button>
           )}
         </div>
         <div>
           <div className="flex items-center">
-            <h1 className="font-bold text-lg">NhatTrieu911</h1>
+            <h1 className="font-bold text-lg">{auth.findUser?.fullName}</h1>
             {true && (
               <img
                 className="ml-2 w-5 h-5"
@@ -87,12 +102,11 @@ const Profile = () => {
               ></img>
             )}
           </div>
-          <h1 className="text-gray-500">@Trieu911</h1>
+          <h1 className="text-gray-500">@{auth.findUser?.fullName.split(" ").join("_").toLowerCase()}</h1>
         </div>
         <div className="mt-2 space-y-3">
           <p>
-            Porsche Driver Experience in the new Panamera with driver-centred
-            interior concept
+            {auth.findUser?.bio}
           </p>
           <div className="py-1 flex space-x-5">
             <div className="flex items-center text-gray-500">
@@ -101,7 +115,7 @@ const Profile = () => {
             </div>
             <div className="flex items-center text-gray-500">
               <LocationOnIcon />
-              <p className="ml-2">VietNam, TPHCM</p>
+              <p className="ml-2">{auth.findUser?.location}</p>
             </div>
             <div className="flex items-center text-gray-500">
               <CalendarMonthIcon />
@@ -110,11 +124,11 @@ const Profile = () => {
           </div>
           <div className="flex items-center space-x-5">
             <div className="flex items-center space-x-1 font-semibold">
-              <span>70</span>
+              <span>{auth.findUser?.following.length}</span>
               <span className="text-gray-500">Following</span>
             </div>
             <div className="flex items-center space-x-1 font-semibold">
-              <span>170</span>
+              <span>{auth.findUser?.followers.length}</span>
               <span className="text-gray-500">Followers</span>
             </div>
           </div>
@@ -136,9 +150,9 @@ const Profile = () => {
               </TabList>
             </Box>
             <TabPanel value="1">
-              {[1, 1, 1, 1].map((item) => (
-                <TweetCard />
-              ))}
+              {twit.twits.map((item) => (
+                <TweetCard item={item}/>
+              ))} 
             </TabPanel>
             <TabPanel value="2">users replies</TabPanel>
             <TabPanel value="3">Media</TabPanel>

@@ -1,13 +1,15 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { useFormik } from "formik";
 import { IconButton, TextField } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Avatar } from "@mui/material";
-import './ProfileModal'
+import "./ProfileModal";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserProfile } from "../../Store/Auth/Action";
+import { uploadToCloudnary } from "../../Utils/upLoadToCloudnary";
 
 const style = {
   position: "absolute",
@@ -23,39 +25,54 @@ const style = {
   borderRadius: 4,
 };
 
-export default function ProfileModal({open, handleClose}) {
+export default function ProfileModal({ open, handleClose }) {
   // const [open, setOpen] = React.useState(false);
   const [uploading, setUploading] = React.useState(false);
+  const dispatch = useDispatch();
+  const [selectedImage, setSelectedImage] = React.useState("");
+  const [selectedImageBackground, setSelectedImageBackground] = React.useState("");
+  const { auth } = useSelector((store) => store);
   // const handleOpen = () => setOpen(true);
   // const handleClose = () => setOpen(false);
   const handleSubmit = (values) => {
+    dispatch(updateUserProfile(values));
     console.log("handle submit", values);
+    // setSelectedImage("");
   };
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
+      setUploading(true);
+      const { name } = event.target;
+      const file = await uploadToCloudnary(event.target.files[0]);
+      setSelectedImage(file);
+      formik.setFieldValue(name, file);
+      setUploading(false);
+  };
+
+  const handleImageChangeBackGround = async (event) => {
     setUploading(true);
     const { name } = event.target;
-    const file = event.target.files[0];
+    const file = await uploadToCloudnary(event.target.files[0]);
+    setSelectedImageBackground(file);
     formik.setFieldValue(name, file);
     setUploading(false);
-  };
+};
   const formik = useFormik({
     initialValues: {
-      fullName: "",
-      website: "",
-      location: "",
-      bio: "",
-      backgroundImage: "",
-      image: "",
+      fullName: auth.user.fullName,
+      website: auth.user.website,
+      location: auth.user.location,
+      bio: auth.user.bio,
+      backgroundImage: auth.user.backgroundImage,
+      image: auth.user.image,
     },
     onSubmit: handleSubmit,
   });
-
   return (
     <div>
       {/* <Button onClick={handleOpen}>Open modal</Button> */}
       <Modal
         open={open}
-        onClose={handleClose} 
+        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -76,13 +93,13 @@ export default function ProfileModal({open, handleClose}) {
                   <div className="relative">
                     <img
                       className="w-full h-[12rem] object-cover object-center"
-                      src="https://porsche-vietnam.vn/wp-content/uploads/2022/11/model-series-911-dakar-head-banner.jpg"
+                      src={selectedImageBackground || auth.user?.backgroundImage}
                       alt=""
                     />
                     <input
                       type="file"
                       className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-                      onChange={handleImageChange}
+                      onChange={handleImageChangeBackGround}
                       name="backgroundImage"
                     />
                   </div>
@@ -95,7 +112,7 @@ export default function ProfileModal({open, handleClose}) {
                         height: "10rem",
                         border: "4px solid white",
                       }}
-                      src="https://img.carbiz.vn/files/2020/Thang%203/03/911/porsche-911-s-2021.jpg"
+                      src={selectedImage || auth.user?.image}
                     />
                     <input
                       className="absolute top-0 left-0 w-[10rem] h-full opacity-0 cursor-pointer"
@@ -114,6 +131,7 @@ export default function ProfileModal({open, handleClose}) {
                   name="fullName"
                   label="Fullname"
                   value={formik.values.fullName}
+                  defaultValue={auth.user.fullName}
                   onChange={formik.handleChange}
                   error={
                     formik.touched.fullName && Boolean(formik.errors.fullName)
@@ -128,6 +146,7 @@ export default function ProfileModal({open, handleClose}) {
                   name="bio"
                   label="Bio"
                   value={formik.values.bio}
+                  defaultValue={auth.user.bio}
                   onChange={formik.handleChange}
                   error={formik.touched.bio && Boolean(formik.errors.bio)}
                   helperText={formik.touched.bio && formik.errors.bio}
@@ -138,6 +157,7 @@ export default function ProfileModal({open, handleClose}) {
                   name="website"
                   label="Website"
                   value={formik.values.website}
+                  defaultValue={auth.user.website}
                   onChange={formik.handleChange}
                   error={
                     formik.touched.website && Boolean(formik.errors.website)

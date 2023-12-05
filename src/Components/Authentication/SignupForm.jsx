@@ -9,14 +9,13 @@ import {
   TextField,
 } from "@mui/material";
 import { Avatar, Button, Select } from "@mui/material";
+import { useState } from "react";
 import { blue } from "@mui/material/colors";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../Store/Auth/Action";
+import { useNavigate } from 'react-router-dom';
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Email is Required"),
-  password: Yup.string().required("Password is required"),
-});
+
 
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 100 }, (_, i) => currentYear - i);
@@ -35,32 +34,52 @@ const months = [
   { value: 11, label: "November" },
   { value: 12, label: "December" },
 ];
+const validationSchema = Yup.object().shape({
+  // email: Yup.string().email("Invalid email").required("Email is Required"),
+  // password: Yup.string().email("Invalid email").required("Email is Required"),
+});
+
 const SignupForm = () => {
   const dispatch = useDispatch()
+  const navigate=useNavigate();
+  const [openAuthModel, setOpenAuthModal]=useState(false);
+  const [error, setError] = useState(null);
+
+  const handleRegister = async (registerData) => {
+    try {
+       await dispatch(registerUser(registerData));
+       navigate("/signin")
+      setOpenAuthModal(true);
+    } catch (error) {
+      setError(error)
+    }
+    
+  };
+  
   const formik = useFormik({
     initialValues: {
-      fullName: "",
+      username: "",
       email: "",
       password: "",
-      dateOfBirth: {
+      birthDate: {
         day: "",
         month: "",
         year: "",
       },
+      confirmPassword:""
     },
     validationSchema,
-    onSubmit: (values) => {
-      const { day, month, year } = values.dateOfBirth;
-      const dateOfBirth = `${year}-${month}-${day}`;
-      values.dateOfBirth = dateOfBirth;
-      dispatch(registerUser(values))
-      console.log("form value ", values);
+    onSubmit: async (values) => {
+      const { day, month, year } = values.birthDate;
+      const birthDate = `${year}-${month}-${day}`;
+      values.birthDate = birthDate;
+      await handleRegister(values);
     },
   });
 
   const handleDateChange = (name) => (event) => {
-    formik.setFieldValue("dateOfBirth", {
-      ...formik.values.dateOfBirth,
+    formik.setFieldValue("birthDate", {
+      ...formik.values.birthDate,
       [name]: event.target.value,
     });
   };
@@ -72,14 +91,14 @@ const SignupForm = () => {
           <TextField
             fullWidth
             label="Full Name"
-            name="fullName"
+            name="username"
             variant="outlined"
             size="large"
-            value={formik.values.fullName}
+            value={formik.values.username}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.fullName && Boolean(formik.errors.fullName)}
-            helperText={formik.touched.fullName && formik.errors.fullName}
+            error={formik.touched.username && Boolean(formik.errors.username)}
+            helperText={formik.touched.username && formik.errors.username}
           />
         </Grid> 
 
@@ -93,8 +112,8 @@ const SignupForm = () => {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.email && Boolean(formik.errors.email)}
-            helperText={formik.touched.email && formik.errors.email}
+            error={error?.email || error?.isExistsEmail}
+            helperText={error?.email || error?.isExistsEmail}
           />
         </Grid>
 
@@ -109,8 +128,23 @@ const SignupForm = () => {
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
+            error={error?.password}
+            helperText={error?.password}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            variant="outlined"
+            size="large"
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={error?.confirmPassword}
+            helperText={error?.confirmPassword}
           />
         </Grid>
         <Grid item xs={4}>
@@ -118,7 +152,7 @@ const SignupForm = () => {
           <Select name="day" 
           onChange={handleDateChange("day")}
           onBlur={formik.handleBlur}
-          value={formik.values.dateOfBirth.day}>
+          value={formik.values.birthDate.day || days[0]}>
             {days.map((day) => (
               <MenuItem key={day} value={day}>
                 {day}
@@ -131,7 +165,7 @@ const SignupForm = () => {
           <Select name="month" 
           onChange={handleDateChange("month")}
           onBlur={formik.handleBlur}
-          value={formik.values.dateOfBirth.month}>
+          value={formik.values.birthDate.month || months[0].value}>
             {months.map((month) => (
               <MenuItem key={month.label} value={month.value}>
                 {month.label}
@@ -144,7 +178,7 @@ const SignupForm = () => {
           <Select name="year" 
           onChange={handleDateChange("year")}
           onBlur={formik.handleBlur}
-          value={formik.values.dateOfBirth.year}>
+          value={formik.values.birthDate.year || years[0]}>
             {years.map((year) => (
               <MenuItem key={year} value={year}>
                 {year}

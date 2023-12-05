@@ -22,6 +22,10 @@ const Navigation = () => {
     handleClose();
     dispatch(logout())
   };
+  const handleRestPassword = () => {
+    console.log("handleRestPassword");
+    handleClose();
+  };
   const navigate = useNavigate();
   return (
     <div className="h-screen sticky top-0">
@@ -45,7 +49,7 @@ const Navigation = () => {
               className="cursor-pointer flex space-x-3 items-center"
               onClick={() => {
                 item.title === "Profile"
-                  ? navigate(`/profile/${5}`)
+                  ? navigate(`/profile/${auth.user?.id}`)
                   : navigate(item.path);
               }}
             >
@@ -72,7 +76,7 @@ const Navigation = () => {
         <div className="flex items-center space-x-3">
           <Avatar
             alt="username"
-            src="https://img.carbiz.vn/files/2020/Thang%203/03/911/porsche-911-s-2021.jpg"
+            src={auth.user.image}
           />
           <div>
             <p>{auth.user?.fullName}</p>
@@ -98,6 +102,7 @@ const Navigation = () => {
             }}
           >
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleRestPassword}>ResetPassword</MenuItem>
           </Menu>
         </div>
       </div>
