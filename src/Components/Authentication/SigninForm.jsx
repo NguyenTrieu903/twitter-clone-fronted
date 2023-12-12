@@ -6,6 +6,8 @@ import { blue } from "@mui/material/colors";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../Store/Auth/Action";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SendEmailModal from "./ResetPassword/ForgotPasswordFormEmail"
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is Required"),
@@ -13,16 +15,22 @@ const validationSchema = Yup.object().shape({
 });
 const SigninForm = () => {
   // localStorage.clear();
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [openEmailModel, setOpenEmailModal] = useState(false);
+  const handleCloseEmailModal = () => setOpenEmailModal(false);
   const [error, setError] = useState(null);
   const handleLogin = async (loginData) => {
     try {
       await dispatch(loginUser(loginData));
     } catch (error) {
-      setError(error)
+      setError(error);
     }
   };
-
+  const handleForgotPassword = () =>{
+    console.log("handle forgot password");
+    setOpenEmailModal(true);
+  }
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -30,7 +38,7 @@ const SigninForm = () => {
     },
     validationSchema,
     onSubmit: (values) => {
-      handleLogin(values)
+      handleLogin(values);
       console.log("form value ", values);
     },
   });
@@ -47,8 +55,8 @@ const SigninForm = () => {
             value={formik.values.email}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={error?.AccessDenied}
-            helperText={formik.touched.email && formik.errors.email}
+            error={error?.AccessDenied || error?.UserNotFound}
+            helperText={error?.AccessDenied || error?.UserNotFound}
           />
         </Grid>
 
@@ -67,19 +75,22 @@ const SigninForm = () => {
             helperText={error?.AccessDenied}
           />
         </Grid>
-
+        <a href="/forget-password" className="text-gray-800">
+          Forgot password?
+        </a>
         <Grid className="mt-20" item xs={12}>
           <Button
             sx={{ borderRadius: "29px", py: "15px", bgcolor: blue[500] }}
             type="submit"
             fullWidth
             variant="contained"
-            size="large"
+            size="large"  
           >
             signin
           </Button>
         </Grid>
       </Grid>
+      {/* <SendEmailModal open={openEmailModel} handleClose={handleCloseEmailModal} /> */}
     </form>
   );
 };

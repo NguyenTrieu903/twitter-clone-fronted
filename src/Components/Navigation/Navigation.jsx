@@ -3,13 +3,13 @@ import { navigationMenu } from "./NavigationMenu";
 import { useNavigate } from "react-router-dom";
 import { Avatar, Button, MenuItem, Menu } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import {useDispatch, useSelector} from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../Store/Auth/Action";
 
 const Navigation = () => {
-  const {auth} = useSelector(store=>store)
+  const { auth } = useSelector((store) => store);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,7 +20,7 @@ const Navigation = () => {
   const handleLogout = () => {
     console.log("logout");
     handleClose();
-    dispatch(logout())
+    dispatch(logout());
   };
   const handleRestPassword = () => {
     console.log("handleRestPassword");
@@ -74,14 +74,17 @@ const Navigation = () => {
       </div>
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <Avatar
-            alt="username"
-            src={auth.user.image}
-          />
+          <Avatar alt="username" src={auth.user.image} />
           <div>
             <p>{auth.user?.fullName}</p>
             {/* <br/> */}
-            <span className="opacity-70">@{auth.user?.fullName.split(" ").join("_").toLowerCase()}</span>
+            {/* <span className="opacity-70">@{auth.user?.fullName.split(" ").join("_").toLowerCase()}</span> */}
+            <span className="opacity-70">
+              @
+              {(auth.user?.fullName || "").includes(" ")
+                ? auth.user?.fullName.split(" ").join("_").toLowerCase()
+                : (auth.user?.fullName || "").toLowerCase()}
+            </span>
           </div>
           <Button
             id="basic-button"

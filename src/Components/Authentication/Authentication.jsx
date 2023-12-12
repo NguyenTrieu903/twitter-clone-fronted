@@ -5,22 +5,51 @@ import Button from "@mui/material/Button";
 import AuthModal from "./AuthModal";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import GoogleIcon from "@mui/icons-material/Google";
+import axios from "axios";
 
 const Authentication = () => {
-  const [openAuthModel, setOpenAuthModal]=useState(false);
+  const [openAuthModel, setOpenAuthModal] = useState(false);
+  
   // const [open, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
-  const handleOpenAuthModal=()=>{
-    navigate('/signup');
+  const handleAPICall = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/auth/login-google"
+      );
+      console.log(response.data);
+      window.location.href = response.data;
+    } catch (error) {
+      console.error(error);
+      // Handle errors from the login-google call
+    }
+    // const urlParams = new URLSearchParams(window.location.search);
+    // const jwt = urlParams.get("jwt");
+    // console.log(jwt);
+
+    // Perform the get-jwt call after redirection
+    // try {
+    //   const jwtResponse = await axios.get("http://localhost:8080/auth/get-jwt");
+    //   console.log(jwtResponse.data);
+    // } catch (error) {
+    //   console.error(error);
+    //   // Handle errors from the get-jwt call after redirection
+    // }
+  };
+  const handleLoginGoogle = () => {
+    handleAPICall();
+  };
+  const handleOpenAuthModal = () => {
+    navigate("/signup");
     setOpenAuthModal(true);
-  }
-  const handleOpenAuthModalSignin=()=>{
-    navigate('/signin');
+  };
+  const handleOpenAuthModalSignin = () => {
+    navigate("/signin");
     setOpenAuthModal(true);
-  }
+  };
   // const openForm = () => setIsOpen(true);
-  const handleCloseAuthModal =()=>setOpenAuthModal(false);
-  
+  const handleCloseAuthModal = () => setOpenAuthModal(false);
   return (
     <div>
       <Grid className="overflow-y-hidden" container>
@@ -49,7 +78,23 @@ const Authentication = () => {
           <div className="font-bold text-3xl py-16">Join Twitter Today</div>
           <div className="w-[60%]">
             <div className="w-full">
-              <GoogleLogin width={330} />
+              {/* <GoogleLogin width={330} /> */}
+              <Button
+                fullWidth
+                color="primary"
+                variant="contained"
+                size="large"
+                sx={{
+                  borderRadius: "29px",
+                  py: "7px",
+                }}
+                onClick={handleLoginGoogle}
+
+                // onClick={openForm}
+              >
+                <GoogleIcon />
+                Login with google
+              </Button>
               <p className="py-5 text-center">OR</p>
               <Button
                 fullWidth
@@ -61,7 +106,6 @@ const Authentication = () => {
                 }}
                 onClick={handleOpenAuthModal}
                 // onClick={openForm}
-
               >
                 Create Account
               </Button>
@@ -70,25 +114,27 @@ const Authentication = () => {
                 Policy, including Cookie Use.
               </p>
               <div className="mt-10">
-                <h1 className="font-bold text-sm mb-5">Already Have Account?</h1>
-              <Button
-                fullWidth
-                variant="outlined"
-                size="large"
-                sx={{
-                  borderRadius: "29px",
-                  py: "7px",
-                }}
-                onClick={handleOpenAuthModalSignin}
-              >
-                Login
-              </Button>
+                <h1 className="font-bold text-sm mb-5">
+                  Already Have Account?
+                </h1>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  size="large"
+                  sx={{
+                    borderRadius: "29px",
+                    py: "7px",
+                  }}
+                  onClick={handleOpenAuthModalSignin}
+                >
+                  Login
+                </Button>
               </div>
             </div>
           </div>
         </Grid>
       </Grid>
-      <AuthModal open={openAuthModel} handleClose={handleCloseAuthModal}/>
+      <AuthModal open={openAuthModel} handleClose={handleCloseAuthModal} />
     </div>
   );
 };

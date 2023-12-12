@@ -25,9 +25,6 @@ const Profile = () => {
   const handleBack = () => navigate(-1);
   const {auth, twit} = useSelector(store=>store)
   const {id} = useParams()
-  // const handleOpenProfileModel = () => {
-  //   console.log("open profile model");
-  // };
   const handleFollowUser = () => {
     dispatch(followUserAction(id))
     console.log("follow user");
