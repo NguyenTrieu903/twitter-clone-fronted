@@ -39,11 +39,13 @@ const Profile = () => {
     }
   };
   
+  const [jwt, setJWT] = useState(localStorage.getItem("jwt"));
+
   useEffect(()=>{
     dispatch(findUserById(id))
     dispatch(getUsersTweet(id))
   },[id])
-  console.log(auth.findUser);
+  console.log("find User", auth.user);
   return (
     <div>
       <section className={`bg-white z-50 flex items-center sticky top-0 bg-opacity-95`}>
@@ -51,7 +53,7 @@ const Profile = () => {
           className="cursor-pointer"
           onClick={handleBack}
         />
-        <h1 className="py-5 text-xl font-bold opacity-90 ml-5">{auth.findUser?.fullName}</h1>
+        <h1 className="py-5 text-xl font-bold opacity-90 ml-5">{auth.user?.fullName}</h1>
       </section>
 
       <section>
@@ -70,7 +72,7 @@ const Profile = () => {
             src={auth.findUser?.image}
             sx={{ width: "10rem", height: "10rem", border: "4px solid white" }}
           />
-          {auth.findUser?.req_user ? (
+          {auth.user?.req_user ? (
             <Button
               onClick={handleOpenProfileModel}
               variant="contained"
@@ -90,7 +92,7 @@ const Profile = () => {
         </div>
         <div>
           <div className="flex items-center">
-            <h1 className="font-bold text-lg">{auth.findUser?.fullName}</h1>
+            <h1 className="font-bold text-lg">{auth.user?.fullName}</h1>
             {true && (
               <img
                 className="ml-2 w-5 h-5"
@@ -99,11 +101,11 @@ const Profile = () => {
               ></img>
             )}
           </div>
-          <h1 className="text-gray-500">@{auth.findUser?.fullName.split(" ").join("_").toLowerCase()}</h1>
+          <h1 className="text-gray-500">@{auth.user?.fullName.split(" ").join("_").toLowerCase()}</h1>
         </div>
         <div className="mt-2 space-y-3">
           <p>
-            {auth.findUser?.bio}
+            {auth.user?.bio}
           </p>
           <div className="py-1 flex space-x-5">
             <div className="flex items-center text-gray-500">
@@ -112,7 +114,7 @@ const Profile = () => {
             </div>
             <div className="flex items-center text-gray-500">
               <LocationOnIcon />
-              <p className="ml-2">{auth.findUser?.location}</p>
+              <p className="ml-2">{auth.user?.location}</p>
             </div>
             <div className="flex items-center text-gray-500">
               <CalendarMonthIcon />
@@ -121,11 +123,11 @@ const Profile = () => {
           </div>
           <div className="flex items-center space-x-5">
             <div className="flex items-center space-x-1 font-semibold">
-              <span>{auth.findUser?.following.length}</span>
+              <span>{auth.user?.following.length}</span>
               <span className="text-gray-500">Following</span>
             </div>
             <div className="flex items-center space-x-1 font-semibold">
-              <span>{auth.findUser?.followers.length}</span>
+              <span>{auth.user?.followers.length}</span>
               <span className="text-gray-500">Followers</span>
             </div>
           </div>

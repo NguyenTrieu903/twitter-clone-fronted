@@ -13,7 +13,7 @@ export const navigationMenu = [
     {
         title:"Home",
         icon:<HomeIcon/>,
-        path:"/home"
+        path:"/"
     },
     {
         title:"Explore",

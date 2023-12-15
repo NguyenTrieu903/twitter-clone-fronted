@@ -11,8 +11,22 @@ import Authentication from "../Authentication/Authentication";
 import SignupForm from "../Authentication/SignupForm";
 import SigninForm from "../Authentication/SigninForm";
 import ResetPassword from "../Authentication/ResetPassword/ResetPasswordForm"
+import { useEffect } from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import { useNavigate } from "react-router-dom";
+import { getUserProfile } from "../../Store/Auth/Action";
+// import { getUserProfile } from '.../Store/Auth/Action';
 
 const Homepage = () => {
+  // const jwt = localStorage.getItem("jwt")
+  // const dispatch = useDispatch()
+  // const navigate = useNavigate()
+  // useEffect(()=>{
+  //   if(jwt){
+  //     dispatch(getUserProfile())
+  //     navigate("/")
+  //   }
+  // },[jwt])
   return (
     <Grid container xs={12} className="px-5 lg:px-36 justify-between">
       <Grid item xs={0} lg={2.5} className="hidden lg:block w-full relative">

@@ -22,7 +22,7 @@ export default function AlertDialog({open, handleClose, errorMessage, successMes
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {errorMessage || successMessage}
+            {errorMessage?.NotCreate || errorMessage?.NotFoundEmail || successMessage}
           </DialogContentText>
         </DialogContent>
       </Dialog>

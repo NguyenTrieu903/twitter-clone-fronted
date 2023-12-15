@@ -22,6 +22,7 @@ const HomeSelection = () => {
   const {twit} = useSelector(store=>store);
   const {auth} = useSelector(store=>store);
   console.log("twit", twit)
+  console.log("auth.jwt",auth.jwt)
   
   const handleSubmit = (values, actions) => {
     dispatch(createTweet(values))
@@ -30,7 +31,7 @@ const HomeSelection = () => {
     selectedImage("")
   };
   
-  
+  const jwt = localStorage.getItem("jwt")
   useEffect(()=>{
     dispatch(getAllTweets())
   },[twit.like, twit.retwit, twit.twit])

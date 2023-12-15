@@ -1,5 +1,5 @@
 import { api } from "../../config/api";
-import { API_BASE_URL } from "../../config/api";
+import { API_BASE_URL, API_DEPLOY } from "../../config/api";
 import axios from "axios";
 import {
   FIND_TWEET_BY_ID_FAILURE,
@@ -27,16 +27,7 @@ import {
 
 export const getAllTweets = () => async (dispatch) => {
   try {
-    // const { data } = await api.get("http://localhost:8080/api/twits", );
-    const jwt = localStorage.getItem("jwt")
-    // console.log(jwt)
     const { data } = await api.get(`${API_BASE_URL}/api/twits`);
-    
-    // const { data1 } = await axios.get(`${API_BASE_URL}/api/twits`, {
-    //     headers: {
-    //       Authorization: `Bearer ${jwt}`,
-    //     },
-    //   });
 
     console.log("get all twits : ", data);
     dispatch({ type: GET_ALL_TWEETS_SUCCESS, payload: data });
@@ -82,6 +73,14 @@ export const findTwitsByIds = (twitId) => async (dispatch) => {
 export const createTweet = (tweetData) => async (dispatch) => {
   try {
     const { data } = await api.post(`/api/twits/create`, tweetData);
+    // const { data } = await axios.get(`${API_BASE_URL}/api/twits/create`, 
+    // { 
+    //   tweetData: tweetData..
+    //  },{
+    //   headers: {
+    //     Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    //   },
+    // });
     console.log("created tweet: ", data);
     dispatch({ type: TWEET_CREATE_SUCCESS, payload: data });
   } catch (error) {
@@ -92,7 +91,7 @@ export const createTweet = (tweetData) => async (dispatch) => {
 
 export const createTweetReply = (tweetData) => async (dispatch) => {
   try {
-    const { data } = await api.post(`${API_BASE_URL}/api/twits/reply`, tweetData);
+    const { data } = await api.post(`${API_DEPLOY}/api/twits/reply`, tweetData);
     console.log("reply tweet: ", data);
     dispatch({ type: REPLY_TWEET_SUCCESS, payload: data });
   } catch (error) {
@@ -103,7 +102,7 @@ export const createTweetReply = (tweetData) => async (dispatch) => {
 
 export const createReTweet = (twitId) => async (dispatch) => {
   try {
-    const { data } = await api.put(`${API_BASE_URL}/api/twits/${twitId}/retwit`);
+    const { data } = await api.put(`${API_DEPLOY}/api/twits/${twitId}/retwit`);
     console.log("Retweet: ", data);
     dispatch({ type: RETWEET_SUCCESS, payload: data });
   } catch (error) {
@@ -114,7 +113,7 @@ export const createReTweet = (twitId) => async (dispatch) => {
 
 export const likeTweet = (twitId) => async (dispatch) => {
   try {
-    const { data } = await api.post(`${API_BASE_URL}/api/likes/${twitId}/likes`);
+    const { data } = await api.post(`${API_DEPLOY}/api/likes/${twitId}/likes`);
     console.log("like tweet : ", data);
     dispatch({ type: LIKE_TWEET_SUCCESS, payload: data });
   } catch (error) {

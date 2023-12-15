@@ -7,12 +7,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import GoogleIcon from "@mui/icons-material/Google";
 import axios from "axios";
+import { useDispatch, useSelector } from 'react-redux'
+import{createTweet, getAllTweets} from '../../Store/Twit/Action'
+
 
 const Authentication = () => {
   const [openAuthModel, setOpenAuthModal] = useState(false);
-  
+  const dispatch = useDispatch();
   // const [open, setIsOpen] = React.useState(false);
   const navigate = useNavigate();
+  console.log(localStorage.jwt)
+  if(localStorage.jwt){
+    dispatch(getAllTweets())
+  }
   const handleAPICall = async () => {
     try {
       const response = await axios.post(
@@ -38,7 +45,8 @@ const Authentication = () => {
     // }
   };
   const handleLoginGoogle = () => {
-    handleAPICall();
+    // handleAPICall();
+    window.location.href = "http://localhost:8080/oauth2/authorization/google";
   };
   const handleOpenAuthModal = () => {
     navigate("/signup");

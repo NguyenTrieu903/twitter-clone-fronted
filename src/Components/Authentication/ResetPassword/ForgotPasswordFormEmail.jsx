@@ -96,7 +96,7 @@ export default function SendEmailModal() {
           </div>
           {/* <ResetPassword open={openResetPassword} handleClose={handleCloseResetPassword} ></ResetPassword> */}
         </form>
-        <AlertDialog open={openAlertDialog} handleClose={handleCloseAlertDialog} errorMessage={error?.NotCreate} successMessage={successMessage}></AlertDialog>
+        <AlertDialog open={openAlertDialog} handleClose={handleCloseAlertDialog} errorMessage={error} successMessage={successMessage}></AlertDialog>
       </Box>
   );
 }

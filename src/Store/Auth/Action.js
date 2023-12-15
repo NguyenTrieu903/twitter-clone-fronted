@@ -1,7 +1,6 @@
 import axios from "axios";
-import { object } from "yup";
 import Authentication from "../../Components/Authentication/Authentication";
-import { API_BASE_URL } from "../../config/api";
+import { API_BASE_URL, API_DEPLOY } from "../../config/api";
 import { api } from "../../config/api";
 
 import {
@@ -79,13 +78,15 @@ export const registerUser = (registerData) => async (dispatch) => {
   }
 };
 
-export const getUserProfile = (jwt) => async (dispatch) => {
+export const getUserProfile = () => async (dispatch) => {
+
   try {
     const { data } = await axios.get(`${API_BASE_URL}/api/users/profile`, {
       headers: {
-        Authorization: `Bearer ${jwt}`,
+        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
       },
     });
+    // const { data } = await api.get(`${API_BASE_URL}/api/users/profile`);
     dispatch({ type: GET_USER_PROFILE_SUCCESS, payload: data });
   } catch (error) {
     console.log("error", error);
@@ -151,6 +152,9 @@ export const emailReset = (email) => async (dispatch) => {
       lst_error["NotCreate"] = error.response.data.message;
       console.log(lst_error) 
     }
+    if(error.response.data.status===401){
+      lst_error["NotFoundEmail"] = error.response.data.message;
+    }
     dispatch({ type: EMAIL_RESET_FAILURE, payload: error.message });
     throw lst_error
   }
@@ -189,4 +193,39 @@ export const resetPassword = (values) => async (dispatch) => {
     throw lst_error
   }
 };
+
+export const AccessToken = (values) => async (dispatch) => {
+  const code = encodeURIComponent(values);
+  console.log("code when call api ", code)
+  const dataURL = new URLSearchParams();
+  dataURL.append('code', code);
+  dataURL.append('client_id', '67460738968-t72uqt3hj27ub99qso0377nnn0ofd9oj.apps.googleusercontent.com');
+  dataURL.append('client_secret', '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');
+  dataURL.append('redirect_uri', 'http://localhost:3000/oauth2/redirect');
+  dataURL.append('grant_type', 'authorization_code');
+  try {
+    // console.log(values);
+    const params = {
+      code: code
+    };
+    console.log("Params ", params)
+    const { data } = await axios.post(
+      `${API_BASE_URL}/auth/getAccessToken`,
+      dataURL,
+      { 
+      },
+      {
+        params,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("data response ", data);
+    // dispatch({ type: EMAIL_RESET_SUCCESS, payload: data });
+    return data;
+  } catch (error) {
+      console.log(error)
+  }
+}; 
 
